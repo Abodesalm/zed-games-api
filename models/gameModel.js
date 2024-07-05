@@ -44,7 +44,7 @@ const gameSchema = new mongoose.Schema(
     },
 
     release: {
-      type: Date,
+      type: String,
       required: false /* [true, "the game must have a release date !"] */,
       default: null,
     },
@@ -150,7 +150,7 @@ gameSchema.pre("save", function (next) {
   console.log("\x1b[34m%s\x1b[0m", "Document Will Be Saved...");
   next();
 });
-
+/* 
 gameSchema.pre(/^find/, function (next) {
   this.start = Date.now();
   next();
@@ -162,7 +162,7 @@ gameSchema.post(/^find/, function (next) {
     `Query took : ${Date.now() - this.start} ms`
   );
   //next();
-});
+}); */
 
 const Game = mongoose.model("Game", gameSchema);
 module.exports = Game;
