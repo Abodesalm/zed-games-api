@@ -13,13 +13,16 @@ router.patch("/updateMyPassword", auth.protect, auth.updatePassword);
 
 router.patch("/updateMe", auth.protect, ctrl.updateMe);
 router.delete("/deleteMe", auth.protect, ctrl.deleteMe);
-/* 
-router.route(`/`).get(ctrl.getUsers).post(ctrl.addUser);
+
+router
+  .route(`/`)
+  .get(ctrl.getUsers)
+  .post(auth.protect, auth.restrictTo("admin"), ctrl.addUser);
 
 router
   .route(`/:id`)
   .get(ctrl.getUser)
-  .patch(ctrl.editUser)
-  .delete(ctrl.deleteUser);
- */
+  .patch(auth.protect, auth.restrictTo("admin"), ctrl.updateUser)
+  .delete(auth.protect, auth.restrictTo("admin"), ctrl.deleteUser);
+
 module.exports = router;

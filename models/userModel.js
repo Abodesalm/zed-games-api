@@ -2,15 +2,15 @@ const mongoose = require("mongoose");
 const validator = require("validator");
 const bcrypt = require("bcryptjs");
 const crypto = require("crypto");
-// name , email , photo , password , passConfirm
 
 const userSchema = new mongoose.Schema({
   name: {
     type: String,
     required: [true, "please tell us your name!"],
     trim: true,
+    maxlength: [32, "user name must have less or equal then 32 character"],
+    minlength: [4, "user name must have more or equal then 4 character"],
   },
-
   email: {
     type: String,
     required: [true, "please enter your email!"],
@@ -18,22 +18,17 @@ const userSchema = new mongoose.Schema({
     lowercase: true,
     validate: [validator.isEmail, "please enter a valid email!"],
   },
-
-  photo: String,
-
   role: {
     type: String,
     enum: ["user", "admin"],
     default: "user",
   },
-
   password: {
     type: String,
     required: [true, "please enter a password!"],
     minlength: [8, "password must be more than 8 characters"],
     select: false,
   },
-
   passConfirm: {
     type: String,
     required: [true, "please confirm your password!"],
@@ -45,7 +40,6 @@ const userSchema = new mongoose.Schema({
       message: "Passwords are not the same!",
     },
   },
-
   passwordChangedAt: Date,
   passwordResetToken: String,
   passwordResetExpires: Date,
@@ -53,6 +47,12 @@ const userSchema = new mongoose.Schema({
     type: Boolean,
     default: true,
     select: false,
+  },
+  list: [],
+  bio: String,
+  avatar: {
+    type: String,
+    enum: ["av-1", "av-2", "av-3", "av-4", "av-5", "av-6", "av-7", "av-8"],
   },
 });
 

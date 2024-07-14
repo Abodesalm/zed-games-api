@@ -1,8 +1,3 @@
-We Generally Have A Clearly Way To Work In This Type Of Back-End :
-
--
--
-
-things to do :
-
-- trim the string models
+- normalize adding list items
+- add functionality to remove and edit the list items
+- deselect the sesitive data from user to another

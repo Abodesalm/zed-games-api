@@ -7,7 +7,8 @@ const gameSchema = new mongoose.Schema(
       unique: true,
       required: [true, "the game must have a name !"],
       trim: true,
-      maxlength: [32, "game name must have less or equal then 32 character"],
+      maxlength: [32, "game name must have less or equal then 32 characters"],
+      minlength: [2, "game name must have more or equal then 2 characters"],
     },
 
     studio: {
@@ -15,36 +16,18 @@ const gameSchema = new mongoose.Schema(
       required: false,
       default: null,
       trim: true,
-      maxlength: [32, "studio name must have less or equal then 32 character"],
+      maxlength: [32, "studio name must have less or equal then 32 characters"],
     },
 
-    myStory: {
-      type: Number,
+    desc: {
+      type: String,
       required: false,
       default: null,
-      max: [100, "story rate must be below 100"],
-    },
-    myBeauty: {
-      type: Number,
-      required: false,
-      default: null,
-      max: [100, "beauty rate must be below 100"],
-    },
-    myGameplay: {
-      type: Number,
-      required: false,
-      default: null,
-      max: [100, "gameplay rate must be below 100"],
-    },
-    myTotal: {
-      type: Number,
-      required: false,
-      default: null,
-      max: [100, "total rate must be below 100"],
+      minlength: [10, "description must have more or equal then 10 characters"],
     },
 
     release: {
-      type: String,
+      type: Number,
       required: false /* [true, "the game must have a release date !"] */,
       default: null,
     },
@@ -53,7 +36,15 @@ const gameSchema = new mongoose.Schema(
       type: [String],
       required: [true, "the game must have at least 1 genre !"],
       enum: {
-        values: ["action", "fps", "open-world", "battleroyal"],
+        values: [
+          "action",
+          "fps",
+          "open-world",
+          "battleroyal",
+          "stealth",
+          "RPG",
+          "endie",
+        ],
         message: "all genres must be real genres",
       },
     },
@@ -73,61 +64,90 @@ const gameSchema = new mongoose.Schema(
       min: [0, "price cannot be below 0"],
     },
 
-    myReview: {
-      type: String,
-      required: false,
-      default: null,
-      trim: true,
+    rates: {
+      myStory: {
+        type: Number,
+        required: false,
+        default: null,
+        max: [100, "story rate must be below 100"],
+      },
+      myBeauty: {
+        type: Number,
+        required: false,
+        default: null,
+        max: [100, "beauty rate must be below 100"],
+      },
+      myGameplay: {
+        type: Number,
+        required: false,
+        default: null,
+        max: [100, "gameplay rate must be below 100"],
+      },
+      myTotal: {
+        type: Number,
+        required: false,
+        default: null,
+        max: [100, "total rate must be below 100"],
+      },
+      myReview: {
+        type: String,
+        required: false,
+        default: null,
+        trim: true,
+      },
     },
 
-    minCPU: {
-      type: String,
-      required: false,
-      default: null,
-    },
-    minRAM: {
-      type: Number,
-      required: false,
-      default: null,
-    },
-    minGPU: {
-      type: String,
-      required: false,
-      default: null,
-    },
-    minVRAM: {
-      type: Number,
-      required: false,
-      default: null,
-    },
-    recCPU: {
-      type: String,
-      required: false,
-      default: null,
-    },
-    recRAM: {
-      type: Number,
-      required: false,
-      default: null,
-    },
-    recGPU: {
-      type: String,
-      required: false,
-      default: null,
-    },
-    recVRAM: {
-      type: Number,
-      required: false,
-      default: null,
-    },
-    storage: {
-      type: Number,
-      required: [true, "the game must have a storage value !"],
+    requirements: {
+      minCPU: {
+        type: String,
+        required: false,
+        default: null,
+      },
+      minRAM: {
+        type: Number,
+        required: false,
+        default: null,
+      },
+      minGPU: {
+        type: String,
+        required: false,
+        default: null,
+      },
+      minVRAM: {
+        type: Number,
+        required: false,
+        default: null,
+      },
+      recCPU: {
+        type: String,
+        required: false,
+        default: null,
+      },
+      recRAM: {
+        type: Number,
+        required: false,
+        default: null,
+      },
+      recGPU: {
+        type: String,
+        required: false,
+        default: null,
+      },
+      recVRAM: {
+        type: Number,
+        required: false,
+        default: null,
+      },
+      storage: {
+        type: Number,
+        required: [true, "the game must have a storage value !"],
+      },
     },
     rank: {
       type: String,
       required: false,
       default: null,
+      enum: ["bronze", "silver", "gold", "diamond"],
     },
 
     addTime: {
@@ -142,9 +162,9 @@ const gameSchema = new mongoose.Schema(
   }
 );
 
-gameSchema.virtual("myRate").get(function () {
+/* gameSchema.virtual("myRate").get(function () {
   return [this.myStory, this.myGraphic, this.myGameplay, this.myTotal];
-});
+}); */
 
 gameSchema.pre("save", function (next) {
   console.log("\x1b[34m%s\x1b[0m", "Document Will Be Saved...");
@@ -167,6 +187,37 @@ gameSchema.post(/^find/, function (next) {
 const Game = mongoose.model("Game", gameSchema);
 module.exports = Game;
 
-// Name , Studio , Release , Genres , Series , Price
+// Name , Desc , Studio , Release , Genres , Series , Price
 // MyBeauty , MyGameplay , MyStory , MyTotal , MyReview , Rank
 // minCPU , minGPU , minRAM , minVRAM , recCPU , recGPU , recRAM , recVRAM , storage
+
+/*
+{
+  name: "",
+  studio: "",
+  desc: "",
+  release: "",
+  genres: ["", "", ""],
+  series: "",
+  price: 50,
+  rank: "",
+  rates: {
+    myStory:
+    myBeauty:
+    myGameplay:
+    myTotal:
+    myReview:
+  },
+  requirements:{
+    minCPU:"",
+    minGPU:"",
+    minRAM:,
+    minVRAM:,
+    recCPU:"",
+    recGPU:"",
+    recRAM:,
+    recVRAM:,
+    storage:
+  }
+}
+*/
