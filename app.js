@@ -12,8 +12,9 @@ const AppError = require("./utils/appError");
 const GEH = require("./controllers/errorCtrl");
 const app = express();
 const ver = "v1";
-const gamesRouter = require("./routes/gameRoutes");
-const usersRouter = require("./routes/userRoutes");
+const gameRouter = require("./routes/gameRoutes");
+const userRouter = require("./routes/userRoutes");
+const reviewRouter = require("./routes/reviewRoutes");
 
 // 1) GLOBAL MIDDLEWARE
 
@@ -47,8 +48,9 @@ app.use(
 // body parser , reading data from body into req.body
 app.use(express.json({ limit: "25kb" }));
 
-app.use(`/api/${ver}/games`, gamesRouter);
-app.use(`/api/${ver}/users`, usersRouter);
+app.use(`/api/${ver}/games`, gameRouter);
+app.use(`/api/${ver}/users`, userRouter);
+app.use(`/api/${ver}/reviews`, reviewRouter);
 
 app.all("*", (req, res, next) => {
   next(new AppError(`Can't find ${req.originalUrl} on this server`, 404));

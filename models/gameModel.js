@@ -70,24 +70,28 @@ const gameSchema = new mongoose.Schema(
         required: false,
         default: null,
         max: [100, "story rate must be below 100"],
+        min: [0, "story rate must be above 0"],
       },
       myBeauty: {
         type: Number,
         required: false,
         default: null,
         max: [100, "beauty rate must be below 100"],
+        min: [0, "beauty rate must be above 0"],
       },
       myGameplay: {
         type: Number,
         required: false,
         default: null,
         max: [100, "gameplay rate must be below 100"],
+        min: [0, "gameplay rate must be above 0"],
       },
       myTotal: {
         type: Number,
         required: false,
         default: null,
         max: [100, "total rate must be below 100"],
+        min: [0, "total rate must be above 0"],
       },
       myReview: {
         type: String,
@@ -149,11 +153,11 @@ const gameSchema = new mongoose.Schema(
       default: null,
       enum: ["bronze", "silver", "gold", "diamond"],
     },
+    photo: String,
 
     addTime: {
       type: Date,
-      required: false,
-      default: Date.now(),
+      default: Date.now,
     },
   },
   {
@@ -162,27 +166,16 @@ const gameSchema = new mongoose.Schema(
   }
 );
 
-/* gameSchema.virtual("myRate").get(function () {
-  return [this.myStory, this.myGraphic, this.myGameplay, this.myTotal];
-}); */
-
 gameSchema.pre("save", function (next) {
   console.log("\x1b[34m%s\x1b[0m", "Document Will Be Saved...");
   next();
 });
-/* 
-gameSchema.pre(/^find/, function (next) {
-  this.start = Date.now();
-  next();
-});
 
-gameSchema.post(/^find/, function (next) {
-  console.log(
-    "\x1b[33m%s\x1b[0m",
-    `Query took : ${Date.now() - this.start} ms`
-  );
-  //next();
-}); */
+gameSchema.virtual("reviews", {
+  ref: "Review",
+  foreignField: "game",
+  localField: "_id",
+});
 
 const Game = mongoose.model("Game", gameSchema);
 module.exports = Game;

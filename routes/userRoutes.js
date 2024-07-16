@@ -1,16 +1,20 @@
 const express = require("express");
 const ctrl = require("./../controllers/userCtrl");
 const auth = require("./../controllers/authCtrl");
+const reviewRouter = require("./../routes/reviewRoutes");
 
 const router = express.Router();
+
+router.use(`/:userId/reviews`, reviewRouter);
 
 router.post("/signup", auth.signup);
 router.post("/login", auth.login);
 
 router.post("/forgotPassword", auth.forgotPassword);
 router.post("/resetPassword/:token", auth.resetPassword);
-router.patch("/updateMyPassword", auth.protect, auth.updatePassword);
 
+router.patch("/updateMyPassword", auth.protect, auth.updatePassword);
+router.get("/me", auth.protect, ctrl.getMe, ctrl.getUser);
 router.patch("/updateMe", auth.protect, ctrl.updateMe);
 router.delete("/deleteMe", auth.protect, ctrl.deleteMe);
 
