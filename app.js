@@ -48,6 +48,9 @@ app.use(
 app.use(express.json({ limit: "30kb" }));
 app.use(cookieParser());
 
+// serve the static files
+app.use(express.static(`${__dirname}/public`));
+
 app.use(`/api/${ver}/games`, gameRouter);
 app.use(`/api/${ver}/users`, userRouter);
 app.use(`/api/${ver}/reviews`, reviewRouter);
