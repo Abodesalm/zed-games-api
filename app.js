@@ -5,8 +5,7 @@ const helmet = require("helmet");
 const mongoSanitize = require("express-mongo-sanitize");
 const xss = require("xss-clean");
 const hpp = require("hpp");
-
-// express-mongo-sanitize   xss-clean   express-rate-limit    hpp
+const cookieParser = require("cookie-parser");
 
 const AppError = require("./utils/appError");
 const GEH = require("./controllers/errorCtrl");
@@ -46,7 +45,8 @@ app.use(
 );
 
 // body parser , reading data from body into req.body
-app.use(express.json({ limit: "25kb" }));
+app.use(express.json({ limit: "30kb" }));
+app.use(cookieParser());
 
 app.use(`/api/${ver}/games`, gameRouter);
 app.use(`/api/${ver}/users`, userRouter);
