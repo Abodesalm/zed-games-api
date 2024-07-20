@@ -48,6 +48,14 @@ const gameSchema = new mongoose.Schema(
         message: "all genres must be real genres",
       },
     },
+    platforms: {
+      type: [String],
+      required: [true, "the game must belong at least to 1 platform !"],
+      enum: {
+        values: ["pc", "ps4", "ps5", "xbox", "mobile", "switch"],
+        message: "all platforms must be real platforms",
+      },
+    },
 
     series: {
       type: String,
@@ -153,7 +161,10 @@ const gameSchema = new mongoose.Schema(
       default: null,
       enum: ["bronze", "silver", "gold", "diamond"],
     },
-    photo: String,
+    photo: {
+      type: String,
+      default: "default.jpg",
+    },
 
     addTime: {
       type: Date,

@@ -6,6 +6,8 @@ const mongoSanitize = require("express-mongo-sanitize");
 const xss = require("xss-clean");
 const hpp = require("hpp");
 const cookieParser = require("cookie-parser");
+const compression = require("compression");
+const cors = require("cors");
 
 const AppError = require("./utils/appError");
 const GEH = require("./controllers/errorCtrl");
@@ -17,6 +19,9 @@ const reviewRouter = require("./routes/reviewRoutes");
 
 // 1) GLOBAL MIDDLEWARE
 
+// set Cross-Origines-Requests
+app.use(cors());
+
 // set security HTTP headers
 app.use(helmet());
 
@@ -25,7 +30,7 @@ if (process.env.NODE_ENV === "dev") app.use(morgan("dev"));
 
 // limit requests from same IP
 const limiter = rateLimit({
-  max: 400,
+  max: 1000,
   windowMs: 60 * 60 * 1000,
   message: "too many requests from this IP, please try again in an hour!",
 });
@@ -50,6 +55,8 @@ app.use(cookieParser());
 
 // serve the static files
 app.use(express.static(`${__dirname}/public`));
+
+app.options("*", cors());
 
 app.use(`/api/${ver}/games`, gameRouter);
 app.use(`/api/${ver}/users`, userRouter);

@@ -7,10 +7,12 @@ const router = express.Router();
 
 router.use(`/:gameId/reviews`, reviewRouter);
 
-router
-  .route(`/`)
-  .get(ctrl.getGames)
-  .post(auth.protect, auth.restrictTo("admin"), ctrl.createGame);
+router.route(`/`).get(ctrl.getGames).post(
+  /* auth.protect, auth.restrictTo("admin"), */
+  ctrl.uploadGamePhoto,
+  ctrl.resizeGamePhoto,
+  ctrl.createGame
+);
 
 router
   .route(`/:id`)

@@ -49,6 +49,10 @@ exports.getOne = (Model, popOptions, select) =>
 
 exports.createOne = (Model) =>
   catchAsync(async (req, res, next) => {
+    console.log(req.file);
+    console.log(req.body);
+
+    if (req.file) req.body.photo = req.file.filename;
     const doc = await Model.create(req.body);
     res.status(201).json({
       status: "success",
@@ -60,6 +64,7 @@ exports.createOne = (Model) =>
 
 exports.updateOne = (Model) =>
   catchAsync(async (req, res, next) => {
+    if (req.file) req.body.photo = req.file.filename;
     const doc = await Model.findByIdAndUpdate(req.params.id, req.body, {
       new: true,
       runValidators: true,
