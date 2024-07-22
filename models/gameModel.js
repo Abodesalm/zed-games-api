@@ -24,6 +24,10 @@ const gameSchema = new mongoose.Schema(
       required: false,
       default: null,
       minlength: [10, "description must have more or equal then 10 characters"],
+      maxlength: [
+        200,
+        "description must have less or equal then 200 characters",
+      ],
     },
 
     release: {
@@ -39,10 +43,10 @@ const gameSchema = new mongoose.Schema(
         values: [
           "action",
           "fps",
-          "open-world",
+          "open world",
           "battleroyal",
           "stealth",
-          "RPG",
+          "rpg",
           "endie",
         ],
         message: "all genres must be real genres",
@@ -52,7 +56,16 @@ const gameSchema = new mongoose.Schema(
       type: [String],
       required: [true, "the game must belong at least to 1 platform !"],
       enum: {
-        values: ["pc", "ps4", "ps5", "xbox", "mobile", "switch"],
+        values: [
+          "pc",
+          "ps3",
+          "ps4",
+          "ps5",
+          "xbox 1",
+          "xbox 360",
+          "mobile",
+          "switch",
+        ],
         message: "all platforms must be real platforms",
       },
     },
