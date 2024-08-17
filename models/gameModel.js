@@ -1,4 +1,5 @@
 const mongoose = require("mongoose");
+const allGenres = require("./../utils/genres");
 
 const gameSchema = new mongoose.Schema(
   {
@@ -40,15 +41,7 @@ const gameSchema = new mongoose.Schema(
       type: [String],
       required: [true, "the game must have at least 1 genre !"],
       enum: {
-        values: [
-          "action",
-          "fps",
-          "open world",
-          "battleroyal",
-          "stealth",
-          "rpg",
-          "endie",
-        ],
+        values: allGenres,
         message: "all genres must be real genres",
       },
     },
@@ -192,6 +185,11 @@ const gameSchema = new mongoose.Schema(
 
 gameSchema.pre("save", function (next) {
   console.log("\x1b[34m%s\x1b[0m", "Document Will Be Saved...");
+  next();
+});
+
+gameSchema.pre("save", function (next) {
+  this.photo = `${this.name.split(" ").join("-")}.jpg`;
   next();
 });
 

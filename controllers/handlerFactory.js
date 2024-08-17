@@ -9,7 +9,10 @@ exports.getAll = (Model) =>
     if (req.params.gameId) filter = { game: req.params.gameId };
     if (req.params.userId) filter = { user: req.params.userId };
 
-    const features = new APIFeatures(Model.find(filter), req.query)
+    const features = new APIFeatures(
+      Model.find({ name: { $regex: req.query.search || "", $options: "i" } }),
+      req.query
+    )
       .filter()
       .sort()
       .limitFields()
@@ -49,9 +52,6 @@ exports.getOne = (Model, popOptions, select) =>
 
 exports.createOne = (Model) =>
   catchAsync(async (req, res, next) => {
-    console.log(req.file);
-    console.log(req.body);
-
     if (req.file) req.body.photo = req.file.filename;
     const doc = await Model.create(req.body);
     res.status(201).json({

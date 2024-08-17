@@ -1,5 +1,7 @@
 const Game = require("./../models/gameModel");
 const factory = require("./handlerFactory");
+const catchAsync = require("./../utils/catchAsync");
+const allGenres = require("./../utils/genres");
 const sharp = require("sharp");
 const multer = require("multer");
 
@@ -32,6 +34,47 @@ exports.resizeGamePhoto = (req, res, next) => {
     .toFile(`public/img/games/${req.file.filename}`);
   next();
 };
+
+/* 
+exports.getGames = catchAsync(async (req, res) => {
+  const page = parseInt(req.query.page) - 1 || 0;
+  const limit = 16;
+  const search = req.query.search || "";
+  let sort = req.query.sort || "addTime";
+  let genre = req.query.genre || "all";
+
+  genre === "all"
+    ? (genre = [...allGenres])
+    : (genre = req.query.genre.split(","));
+  req.query.sort ? (sort = req.query.sort.split(",")) : (sort = [sort]);
+
+  let sortBy = {};
+  if (sort[1]) {
+    sortBy[sort[0]] = sort[1];
+  } else {
+    sortBy[sort[0]] = "asc";
+  }
+
+  const games = await Game.find({ name: { $regex: search, $options: "i" } });
+    .where("genres")
+    .in([...genre])
+    .sort(sortBy)
+    .skip(page * limit)
+    .limit(limit);
+
+  const total = await Game.countDocuments({
+    genre: { $in: [...genre] },
+    name: { $regex: search, $options: "i" },
+  });
+
+  res.status(200).json({
+    status: "success",
+    results: games.length,
+    page: page + 1,
+    data: { data: games },
+  });
+});
+ */
 
 exports.getGames = factory.getAll(Game);
 
