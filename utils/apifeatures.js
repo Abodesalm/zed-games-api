@@ -1,3 +1,5 @@
+const allGenres = require("./genres");
+
 class APIFeatures {
   constructor(query, queryString) {
     this.query = query;
@@ -7,12 +9,12 @@ class APIFeatures {
   filter() {
     //filtering
     const queryObj = { ...this.queryString };
-    const excluded = ["page", "sort", "limit", "fields", "search"];
+    const excluded = ["page", "sort", "genres", "limit", "fields", "search"];
     excluded.forEach((el) => delete queryObj[el]);
     //advanced filtering
     let queryStr = JSON.stringify(queryObj);
     queryStr = queryStr.replace(/\b(gte|gt|lte|lt)\b/g, (match) => `$${match}`);
-    const finalQuery = JSON.parse(queryStr);
+    let finalQuery = JSON.parse(queryStr);
     this.query = this.query.find(finalQuery);
     return this;
   }
@@ -47,6 +49,20 @@ class APIFeatures {
     this.query = this.query.skip(skip).limit(limit);
     return this;
   }
+
+  /*   genres() {
+    let genres = this.queryString.genres || "all";
+    if (genres === "all") {
+      genres = [...allGenres];
+    } else {
+      genres = this.queryString.genres.split(",");
+    }
+    genres.forEach((en) => {
+      return (this.query = this.query.filter((el) => {
+        return el.genres.includes(en);
+      }));
+    });
+  } */
 }
 
 module.exports = APIFeatures;

@@ -1,6 +1,7 @@
 const catchAsync = require("./../utils/catchAsync");
 const AppError = require("./../utils/appError");
 const APIFeatures = require("./../utils/apifeatures");
+const allGenres = require("./../utils/genres");
 
 exports.getAll = (Model) =>
   catchAsync(async (req, res, next) => {
@@ -9,8 +10,21 @@ exports.getAll = (Model) =>
     if (req.params.gameId) filter = { game: req.params.gameId };
     if (req.params.userId) filter = { user: req.params.userId };
 
+    let genres = req.query.genres || "all";
+    genres === "all"
+      ? (genres = [...allGenres])
+      : (genres = req.query.genres.split(","));
+    console.log(genres);
     const features = new APIFeatures(
-      Model.find({ name: { $regex: req.query.search || "", $options: "i" } }),
+      Model.find({
+        name: {
+          $regex: req.query.search || "",
+          $options: "i",
+        },
+        genres: {
+          $in: [...genres],
+        },
+      }),
       req.query
     )
       .filter()

@@ -165,7 +165,7 @@ const gameSchema = new mongoose.Schema(
       type: String,
       required: false,
       default: null,
-      enum: ["bronze", "silver", "gold", "diamond"],
+      enum: ["silver", "gold", "diamond"],
     },
     photo: {
       type: String,

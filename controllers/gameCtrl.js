@@ -34,7 +34,6 @@ exports.resizeGamePhoto = (req, res, next) => {
     .toFile(`public/img/games/${req.file.filename}`);
   next();
 };
-
 /* 
 exports.getGames = catchAsync(async (req, res) => {
   const page = parseInt(req.query.page) - 1 || 0;
@@ -55,7 +54,9 @@ exports.getGames = catchAsync(async (req, res) => {
     sortBy[sort[0]] = "asc";
   }
 
-  const games = await Game.find({ name: { $regex: search, $options: "i" } });
+  const games = await Game.find({
+    name: { $regex: search, $options: "i", $in: [...genre] },
+  })
     .where("genres")
     .in([...genre])
     .sort(sortBy)
@@ -73,8 +74,7 @@ exports.getGames = catchAsync(async (req, res) => {
     page: page + 1,
     data: { data: games },
   });
-});
- */
+}); */
 
 exports.getGames = factory.getAll(Game);
 

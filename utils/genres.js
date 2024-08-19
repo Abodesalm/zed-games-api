@@ -7,8 +7,10 @@ const allGenres = [
   "rpg",
   "indie",
   "platform",
-  "",
-  "",
+  "survival",
+  "horror",
+  "adventure",
+  "simulation",
 ];
 
 module.exports = allGenres;
