@@ -11,6 +11,11 @@ const allGenres = [
   "horror",
   "adventure",
   "simulation",
+  "puzzle",
+  "multiplayer",
+  "singleplayer",
+  "strategy",
+  "sport",
 ];
 
 module.exports = allGenres;
