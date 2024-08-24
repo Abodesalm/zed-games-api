@@ -14,7 +14,6 @@ exports.getAll = (Model) =>
     genres === "all"
       ? (genres = [...allGenres])
       : (genres = req.query.genres.split(","));
-    console.log(genres);
     const features = new APIFeatures(
       Model.find({
         name: {

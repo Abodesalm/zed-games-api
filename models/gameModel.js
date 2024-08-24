@@ -33,7 +33,6 @@ const gameSchema = new mongoose.Schema(
 
     release: {
       type: Number,
-      required: false /* [true, "the game must have a release date !"] */,
       default: null,
     },
 
@@ -47,10 +46,11 @@ const gameSchema = new mongoose.Schema(
     },
     platforms: {
       type: [String],
-      required: [true, "the game must belong at least to 1 platform !"],
       enum: {
         values: [
           "pc",
+          "ps1",
+          "ps2",
           "ps3",
           "ps4",
           "ps5",
@@ -65,7 +65,6 @@ const gameSchema = new mongoose.Schema(
 
     series: {
       type: String,
-      required: false,
       default: null,
       trim: true,
       maxlength: [32, "series name must have less or equal then 32 character"],
@@ -73,7 +72,6 @@ const gameSchema = new mongoose.Schema(
 
     price: {
       type: Number,
-      required: false,
       default: null,
       min: [0, "price cannot be below 0"],
     },
@@ -167,10 +165,7 @@ const gameSchema = new mongoose.Schema(
       default: null,
       enum: ["silver", "gold", "diamond"],
     },
-    photo: {
-      type: String,
-      default: "default.jpg",
-    },
+    photo: String,
 
     addTime: {
       type: Date,
@@ -182,11 +177,6 @@ const gameSchema = new mongoose.Schema(
     toObject: { virtuals: true },
   }
 );
-
-gameSchema.pre("save", function (next) {
-  console.log("\x1b[34m%s\x1b[0m", "Document Will Be Saved...");
-  next();
-});
 
 gameSchema.pre("save", function (next) {
   this.photo = `${this.name.split(" ").join("-")}.jpg`;

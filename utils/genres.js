@@ -15,7 +15,13 @@ const allGenres = [
   "multiplayer",
   "singleplayer",
   "strategy",
-  "sport",
+  "sports",
+  "racing",
+  "casual",
+  "fighting",
+  "cards",
+  "hack & slash",
+  "family-friendly",
 ];
 
 module.exports = allGenres;

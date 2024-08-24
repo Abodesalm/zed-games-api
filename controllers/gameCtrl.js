@@ -76,6 +76,14 @@ exports.getGames = catchAsync(async (req, res) => {
   });
 }); */
 
+exports.countGames = catchAsync(async (req, res, next) => {
+  const count = (await Game.find().limit(10000)).length;
+  res.status(200).json({
+    status: "success",
+    data: count,
+  });
+});
+
 exports.getGames = factory.getAll(Game);
 
 exports.getGame = factory.getOne(Game, {
