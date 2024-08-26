@@ -5,9 +5,9 @@ const reviewRouter = require("./../routes/reviewRoutes");
 
 const router = express.Router();
 
-router.use(`/:gameId/reviews`, reviewRouter);
-
 router.route(`/games-count`).get(ctrl.countGames);
+
+router.use(`/:gameId/reviews`, reviewRouter);
 
 router.route(`/`).get(ctrl.getGames).post(
   /* auth.protect, auth.restrictTo("admin"), */
