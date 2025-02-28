@@ -2,6 +2,7 @@ const AppError = require("../utils/appError");
 const User = require("./../models/userModel");
 const catchAsync = require("./../utils/catchAsync");
 const factory = require("./handlerFactory");
+const APIFeatures = require("./../utils/apifeatures");
 
 const filterObj = (obj, ...allowedFields) => {
   const newObj = {};
@@ -18,16 +19,23 @@ exports.getMe = (req, res, next) => {
 };
 exports.updateMe = catchAsync(async (req, res, next) => {
   //1) create error if user POSTs password data
-  if (req.body.password || req.body.passConfirm)
+  if (req.body.password)
     return next(
       new AppError(
         "This route is not for password updates. Please use /updateMyPassword",
         400
       )
     );
-
+  console.log(req.body);
   //2) update user document
-  const filteredBody = filterObj(req.body, "name", "email", "avatar", "bio");
+  const filteredBody = filterObj(
+    req.body,
+    "username",
+    "avatar",
+    "bio",
+    "socials",
+    "tags"
+  );
   const updatedUser = await User.findByIdAndUpdate(req.user.id, filteredBody, {
     new: true,
     runValidators: true,
@@ -52,13 +60,43 @@ exports.deleteMe = catchAsync(async (req, res, next) => {
 //
 //
 
+exports.getUserByName = catchAsync(async (req, res, next) => {
+  let user = await User.findOne({ username: { $eq: req.params.name } }).select(
+    "username bio avatar tags socials"
+  );
+  if (!user) {
+    return next(new AppError(`No user found with this Username`, 404));
+  }
+  res.status(200).json({
+    status: "success",
+    data: user,
+  });
+});
+exports.getNormalUsers = catchAsync(async (req, res, next) => {
+  let featuring = new APIFeatures(
+    User.find({
+      username: {
+        $regex: req.query.search || "",
+        $options: "i",
+      },
+    }),
+    req.query
+  )
+    .filter()
+    .sort()
+    .limitFields()
+    .paginate();
+  let users = await featuring.query;
+
+  res.status(200).json({
+    status: "success",
+    data: { data: users },
+  });
+});
+
 exports.getUsers = factory.getAll(User);
 
-exports.getUser = factory.getOne(
-  User,
-  { path: "reviews", select: "-user" },
-  "name reviews bio avatar"
-);
+exports.getUser = factory.getOne(User, {}, "_id username socials tags avatar");
 
 exports.addUser = factory.createOne(User);
 

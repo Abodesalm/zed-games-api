@@ -18,6 +18,9 @@ router.get("/me", auth.protect, ctrl.getMe, ctrl.getUser);
 router.patch("/updateMe", auth.protect, ctrl.updateMe);
 router.delete("/deleteMe", auth.protect, ctrl.deleteMe);
 
+router.get("/get", ctrl.getNormalUsers);
+router.get("/get/:name", ctrl.getUserByName);
+
 router
   .route(`/`)
   .get(ctrl.getUsers)

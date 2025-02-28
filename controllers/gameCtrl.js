@@ -1,7 +1,6 @@
 const Game = require("./../models/gameModel");
 const factory = require("./handlerFactory");
 const catchAsync = require("./../utils/catchAsync");
-const allGenres = require("./../utils/genres");
 const sharp = require("sharp");
 const multer = require("multer");
 
@@ -25,59 +24,19 @@ const multerFilter = (req, file, cb) => {
 const upload = multer({ storage: multerStorage, fileFilter: multerFilter });
 exports.uploadGamePhoto = upload.single("photo");
 exports.resizeGamePhoto = (req, res, next) => {
+  console.log(req.file);
   if (!req.file) return next();
   req.file.filename = `game-${Date.now()}.jpeg`;
   sharp(req.file.buffer)
-    .resize(400, 600)
+    .resize(600, 900)
     .toFormat("jpeg")
     .jpeg({ quality: 90 })
     .toFile(`public/img/games/${req.file.filename}`);
   next();
 };
-/* 
-exports.getGames = catchAsync(async (req, res) => {
-  const page = parseInt(req.query.page) - 1 || 0;
-  const limit = 16;
-  const search = req.query.search || "";
-  let sort = req.query.sort || "addTime";
-  let genre = req.query.genre || "all";
-
-  genre === "all"
-    ? (genre = [...allGenres])
-    : (genre = req.query.genre.split(","));
-  req.query.sort ? (sort = req.query.sort.split(",")) : (sort = [sort]);
-
-  let sortBy = {};
-  if (sort[1]) {
-    sortBy[sort[0]] = sort[1];
-  } else {
-    sortBy[sort[0]] = "asc";
-  }
-
-  const games = await Game.find({
-    name: { $regex: search, $options: "i", $in: [...genre] },
-  })
-    .where("genres")
-    .in([...genre])
-    .sort(sortBy)
-    .skip(page * limit)
-    .limit(limit);
-
-  const total = await Game.countDocuments({
-    genre: { $in: [...genre] },
-    name: { $regex: search, $options: "i" },
-  });
-
-  res.status(200).json({
-    status: "success",
-    results: games.length,
-    page: page + 1,
-    data: { data: games },
-  });
-}); */
 
 exports.countGames = catchAsync(async (req, res, next) => {
-  const count = (await Game.find().limit(10000)).length;
+  const count = (await Game.find().limit(10000).select("name")).length;
   res.status(200).json({
     status: "success",
     data: count,
@@ -96,3 +55,43 @@ exports.createGame = factory.createOne(Game);
 exports.updateGame = factory.updateOne(Game);
 
 exports.deleteGame = factory.deleteOne(Game);
+
+/* const redisClient = createClient();
+redisClient.on("error", (err) => {
+  console.error("REDIS ERROR :", err);
+});
+(async ()=>{
+  await redisClient.connect();
+})
+ */
+exports.getGameOfTheDay = catchAsync(async (req, res) => {
+  const today = new Date().toISOString().split("T")[0];
+
+  /*   const cacheKey = `gameOfTheDay-${today}`;
+  const cachedGame = await redisClient.get(cacheKey);
+  if (cachedGame) {
+    return JSON.parse(cachedGame);
+  } */
+  const games = await Game.find();
+  const seed = today;
+  const randomIndex = Math.abs(hashCode(seed)) % games.length;
+  const game = games[randomIndex];
+
+  /*   await redisClient.set(cacheKey, JSON.stringify(game), { EX: 86400 });
+   */
+  res.status(200).json({
+    status: "success",
+    data: {
+      data: game,
+    },
+  });
+});
+const hashCode = (str) => {
+  let hash = 0;
+  for (let i = 0; i < str.length; i++) {
+    const char = str.charCodeAt(i);
+    hash = (hash << 5) - hash + char;
+    hash |= 0;
+  }
+  return hash;
+};

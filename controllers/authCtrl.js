@@ -8,15 +8,13 @@ const sendEmail = require("./../utils/email");
 
 const signToken = (id) => {
   return jwt.sign({ id }, process.env.JWT_SECRET, {
-    expiresIn: process.env.JWT_EXPIRES_IN,
+    expiresIn: "2160h",
   });
 };
 const createSendToken = (user, statusCode, res) => {
   const token = signToken(user._id);
   const cookieOptions = {
-    expires: new Date(
-      Date.now() + process.env.JWT_COOKIE_EXPIRES_IN * 24 * 60 * 60 * 1000
-    ),
+    expires: new Date(Date.now() + 90 * 24 * 60 * 60 * 1000),
     httpOnly: true,
   };
 
@@ -34,12 +32,11 @@ const createSendToken = (user, statusCode, res) => {
 
 exports.signup = catchAsync(async (req, res, next) => {
   const newUser = await User.create({
-    name: req.body.name,
+    username: req.body.username,
     email: req.body.email,
     password: req.body.password,
-    passConfirm: req.body.passConfirm,
-    bio: req.body.bio,
     avatar: req.body.avatar,
+    role: "user",
   });
   createSendToken(newUser, 201, res);
 });
@@ -55,7 +52,6 @@ exports.login = catchAsync(async (req, res, next) => {
   const user = await User.findOne({ email }).select("+password");
   if (!user || !(await user.correctPass(password, user.password)))
     return next(new AppError("Incorrect email or password!", 401));
-
   // 3) if everything is OK, send token to client
   createSendToken(user, 200, res);
 });
@@ -68,7 +64,7 @@ exports.protect = catchAsync(async (req, res, next) => {
     req.headers.authorization.startsWith("Bearer")
   ) {
     token = req.headers.authorization.split(" ")[1];
-  } else if (req.cookie.jwt) {
+  } else if (req.cookie?.jwt) {
     token = req.cookie.jwt;
   }
   if (!token) {
@@ -90,7 +86,7 @@ exports.protect = catchAsync(async (req, res, next) => {
     );
   }
   //4) check if user changed password after JWT
-  if (freshUser.changedPassAfter(decoded.iat)) {
+  if (await freshUser.changedPassAfter(decoded.iat)) {
     return next(
       new AppError("User recently changed password! please log in again", 401)
     );

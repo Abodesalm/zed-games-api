@@ -2,26 +2,29 @@ const mongoose = require("mongoose");
 const validator = require("validator");
 const bcrypt = require("bcryptjs");
 const crypto = require("crypto");
+const avatars = require("./../utils/avatars");
 
 const userSchema = new mongoose.Schema(
   {
-    name: {
+    username: {
       type: String,
-      required: [true, "please tell us your name!"],
+      required: [true, "please write your username!"],
       trim: true,
+      unique: [true, "this username is taken!"],
       maxlength: [32, "user name must have less or equal then 32 character"],
-      minlength: [4, "user name must have more or equal then 4 character"],
+      minlength: [2, "user name must have more or equal then 4 character"],
     },
     email: {
       type: String,
       required: [true, "please enter your email!"],
-      unique: true,
+      unique: [true, "this email is already exist!"],
       lowercase: true,
+      select: false,
       validate: [validator.isEmail, "please enter a valid email!"],
     },
     role: {
       type: String,
-      enum: ["user", "admin"],
+      enum: ["user", "writer", "admin"],
       default: "user",
     },
     password: {
@@ -30,17 +33,38 @@ const userSchema = new mongoose.Schema(
       minlength: [8, "password must be more than 8 characters"],
       select: false,
     },
-    passConfirm: {
-      type: String,
-      required: [true, "please confirm your password!"],
-      validate: {
-        // Work Only On Create & Save
-        validator: function (el) {
-          return el === this.password;
-        },
-        message: "Passwords are not the same!",
+    socials: {
+      instagram: {
+        type: String,
+        default: "-- --",
+      },
+      steam: {
+        type: String,
+        default: "-- --",
+      },
+      discord: {
+        type: String,
+        default: "-- --",
       },
     },
+    tags: {
+      type: [String],
+    },
+    avatar: {
+      type: String,
+      default: "default.jpg",
+      enum: {
+        values: avatars,
+        message: "avatar must exist",
+      },
+    },
+    bio: {
+      type: String,
+      default: "",
+      maxlength: [200, "bio must be below 200 words"],
+    },
+    googleId: String,
+    provider: String,
     passwordChangedAt: {
       type: Date,
     },
@@ -51,13 +75,7 @@ const userSchema = new mongoose.Schema(
       default: true,
       select: false,
     },
-    bio: String,
-    avatar: {
-      type: String,
-      enum: ["av-1", "av-2", "av-3", "av-4", "av-5", "av-6", "av-7", "av-8"],
-      default: "av-1",
-    },
-    addTime: {
+    created_at: {
       type: Date,
       default: Date.now,
     },
@@ -73,11 +91,6 @@ userSchema.pre("save", async function (next) {
 
   this.password = await bcrypt.hash(this.password, 10);
   this.passConfirm = undefined;
-  next();
-});
-
-userSchema.pre("save", function (next) {
-  console.log("\x1b[34m%s\x1b[0m", "User Signed In !");
   next();
 });
 
@@ -106,6 +119,8 @@ userSchema.methods.changedPassAfter = async function (JWTTimestamp) {
       this.passwordChangedAt.getTime() / 1000,
       10
     );
+    console.log(changedTimestamp);
+    console.log(JWTTimestamp);
     return JWTTimestamp < changedTimestamp;
   }
   return false;
@@ -121,10 +136,15 @@ userSchema.methods.CreatePasswordResetToken = async function () {
   return resetToken;
 };
 
-userSchema.virtual("reviews", {
+/* userSchema.virtual("reviews", {
   ref: "Review",
   foreignField: "user",
   localField: "_id",
+}); */
+
+userSchema.pre("save", function (next) {
+  console.log("\x1b[34m%s\x1b[0m", "User Signed In !");
+  next();
 });
 
 const User = mongoose.model("user", userSchema);

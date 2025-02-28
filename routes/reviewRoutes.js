@@ -15,3 +15,6 @@ router
   .delete(auth.protect, ctrl.deleteReview);
 
 module.exports = router;
+
+// games/:gameId/reviews      GET | POST
+//

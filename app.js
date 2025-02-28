@@ -6,14 +6,13 @@ const mongoSanitize = require("express-mongo-sanitize");
 const xss = require("xss-clean");
 const hpp = require("hpp");
 const cookieParser = require("cookie-parser");
-const compression = require("compression");
 const cors = require("cors");
 
 const AppError = require("./utils/appError");
 const GEH = require("./controllers/errorCtrl");
 const app = express();
-const ver = "v1";
 const gameRouter = require("./routes/gameRoutes");
+//const authRouter = require("./routes/authRoutes");
 const userRouter = require("./routes/userRoutes");
 const reviewRouter = require("./routes/reviewRoutes");
 
@@ -58,9 +57,10 @@ app.use(express.static(`${__dirname}/public`));
 
 app.options("*", cors());
 
-app.use(`/api/${ver}/games`, gameRouter);
-app.use(`/api/${ver}/users`, userRouter);
-app.use(`/api/${ver}/reviews`, reviewRouter);
+app.use(`/api/games`, gameRouter);
+//app.use(`/api/auth`, authRouter);
+app.use(`/api/users`, userRouter);
+app.use(`/api/reviews`, reviewRouter);
 
 app.all("*", (req, res, next) => {
   next(new AppError(`Can't find ${req.originalUrl} on this server`, 404));

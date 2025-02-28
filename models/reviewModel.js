@@ -1,7 +1,20 @@
 const mongoose = require("mongoose");
+const User = require("./../models/userModel");
+const Game = require("./../models/gameModel");
 
 const reviewSchema = new mongoose.Schema(
   {
+    gameId: {
+      type: mongoose.Schema.Types.ObjectId,
+      required: [true, "Review must belong to a game."],
+      ref: "Game",
+    },
+    userId: {
+      type: mongoose.Schema.Types.ObjectId,
+      required: [true, "Review must belong to a user."],
+      ref: "User",
+    },
+
     rates: {
       story: {
         type: Number,
@@ -24,32 +37,21 @@ const reviewSchema = new mongoose.Schema(
         max: [100, "gameplay rate must be below 100"],
         min: [0, "gameplay rate must be above 0"],
       },
-      total: {
+      general: {
         type: Number,
-        required: [true, "Review must have at least the total rate."],
+        required: [true, "Review must have at least the general rate."],
         max: [100, "total rate must be below 100"],
         min: [0, "total rate must be above 0"],
       },
-      text: {
-        type: String,
-        required: false,
-        default: null,
-        trim: true,
-      },
     },
-
-    game: {
-      type: mongoose.Schema.ObjectId,
-      ref: "Game",
-      require: [true, "Review must belong to a game."],
+    texts: {
+      story: String,
+      beauty: String,
+      gameplay: String,
+      general: String,
+      short: String,
     },
-    user: {
-      type: mongoose.Schema.ObjectId,
-      ref: "User",
-      require: [true, "Review must belong to a user."],
-    },
-
-    addTime: {
+    created_at: {
       type: Date,
       default: Date.now,
     },
@@ -62,11 +64,13 @@ const reviewSchema = new mongoose.Schema(
 
 reviewSchema.pre(/^find/, function (next) {
   this.populate({
-    path: "game",
-    select: "name photo",
+    path: "gameId",
+    select: "name cover",
+    model: Game,
   }).populate({
-    path: "user",
-    select: "name avatar",
+    path: "userId",
+    select: "username avatar",
+    model: User,
   });
   next();
 });

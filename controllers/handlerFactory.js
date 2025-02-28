@@ -20,7 +20,7 @@ exports.getAll = (Model) =>
           $regex: req.query.search || "",
           $options: "i",
         },
-        genres: {
+        tags: {
           $in: [...genres],
         },
       }),
@@ -45,10 +45,10 @@ exports.getAll = (Model) =>
 exports.getOne = (Model, popOptions, select) =>
   catchAsync(async (req, res, next) => {
     let query = Model.findById(req.params.id);
-    if (popOptions) query = query.populate(popOptions);
-    else if (select) query = query.select(select);
-    else if (select && popOptions)
-      query = query.populate(popOptions).select(select);
+    //if (popOptions) query = query.populate(popOptions);
+    if (select) query = query.select(select);
+    //else if (select && popOptions)
+    //query = query.populate(popOptions).select(select);
 
     const doc = await query;
 
@@ -65,7 +65,7 @@ exports.getOne = (Model, popOptions, select) =>
 
 exports.createOne = (Model) =>
   catchAsync(async (req, res, next) => {
-    if (req.file) req.body.photo = req.file.filename;
+    //if (req.file) req.body.photo = req.file.filename;
     const doc = await Model.create(req.body);
     res.status(201).json({
       status: "success",

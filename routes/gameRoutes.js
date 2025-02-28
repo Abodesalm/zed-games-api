@@ -5,6 +5,7 @@ const reviewRouter = require("./../routes/reviewRoutes");
 
 const router = express.Router();
 
+router.route(`/game-of-the-day`).get(ctrl.getGameOfTheDay);
 router.route(`/games-count`).get(ctrl.countGames);
 
 router.use(`/:gameId/reviews`, reviewRouter);
