@@ -11,9 +11,10 @@ router.route(`/games-count`).get(ctrl.countGames);
 router.use(`/:gameId/reviews`, reviewRouter);
 
 router.route(`/`).get(ctrl.getGames).post(
-  /* auth.protect, auth.restrictTo("admin"), */
-  ctrl.uploadGamePhoto,
-  ctrl.resizeGamePhoto,
+  auth.protect,
+  auth.restrictTo("admin"),
+  //ctrl.uploadGamePhoto,
+  //ctrl.resizeGamePhoto,
   ctrl.createGame
 );
 
@@ -22,7 +23,5 @@ router
   .get(ctrl.getGame)
   .patch(auth.protect, auth.restrictTo("admin"), ctrl.updateGame)
   .delete(auth.protect, auth.restrictTo("admin"), ctrl.deleteGame);
-
-//router.route(`/:gameId/reviews`).post(auth.protect, reviewCtrl.createReview);
 
 module.exports = router;

@@ -10,7 +10,7 @@ const handleValidationDB = (err) => {
   return new AppError(message, 400);
 };
 const handleDuplicateFieldsDB = (err) => {
-  const x = err.errmsg.match(/(["'])(\\?.)*?\1/)[0];
+  const x = err.keyValue.name;
   const message = `Duplicate field value : ${x}. please use another value!`;
   return new AppError(message, 400);
 };

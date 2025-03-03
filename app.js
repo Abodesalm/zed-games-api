@@ -25,7 +25,7 @@ app.use(cors());
 app.use(helmet());
 
 // log requests infos for Dev
-if (process.env.NODE_ENV === "dev") app.use(morgan("dev"));
+/* if (process.env.NODE_ENV === "dev")  */ app.use(morgan("dev"));
 
 // limit requests from same IP
 const limiter = rateLimit({
@@ -49,7 +49,7 @@ app.use(
 );
 
 // body parser , reading data from body into req.body
-app.use(express.json({ limit: "30kb" }));
+app.use(express.json({ limit: "50kb" }));
 app.use(cookieParser());
 
 // serve the static files

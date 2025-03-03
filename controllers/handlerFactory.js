@@ -16,7 +16,11 @@ exports.getAll = (Model) =>
       : (genres = req.query.genres.split(","));
     const features = new APIFeatures(
       Model.find({
-        name: {
+        /*         name: {
+          $regex: req.query.search || "",
+          $options: "i",
+        }, */
+        keywords: {
           $regex: req.query.search || "",
           $options: "i",
         },

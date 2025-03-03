@@ -94,79 +94,54 @@ const gameSchema = new mongoose.Schema(
     },
     descriptions: {
       en: {
-        desc: {
-          type: String,
-          required: false,
-          default: null,
-          minlength: [
-            10,
-            "description must have more or equal then 10 characters",
-          ],
-          maxlength: [
-            200,
-            "description must have less or equal then 200 characters",
-          ],
-        },
+        type: String,
+        required: false,
+        default: null,
+        minlength: [5, "description must have more or equal then 5 characters"],
+        maxlength: [
+          300,
+          "description must have less or equal then 300 characters",
+        ],
       },
       ar: {
-        desc: {
-          type: String,
-          required: false,
-          default: null,
-          minlength: [
-            10,
-            "description must have more or equal then 10 characters",
-          ],
-          maxlength: [
-            200,
-            "description must have less or equal then 200 characters",
-          ],
-        },
+        type: String,
+        required: false,
+        default: null,
+        minlength: [5, "description must have more or equal then 5 characters"],
+        maxlength: [
+          300,
+          "description must have less or equal then 300 characters",
+        ],
       },
       de: {
-        desc: {
-          type: String,
-          required: false,
-          default: null,
-          minlength: [
-            10,
-            "description must have more or equal then 10 characters",
-          ],
-          maxlength: [
-            200,
-            "description must have less or equal then 200 characters",
-          ],
-        },
+        type: String,
+        required: false,
+        default: null,
+        minlength: [5, "description must have more or equal then 5 characters"],
+        maxlength: [
+          300,
+          "description must have less or equal then 300 characters",
+        ],
       },
       fr: {
-        desc: {
-          type: String,
-          required: false,
-          default: null,
-          minlength: [
-            10,
-            "description must have more or equal then 10 characters",
-          ],
-          maxlength: [
-            200,
-            "description must have less or equal then 200 characters",
-          ],
-        },
+        type: String,
+        required: false,
+        default: null,
+        minlength: [5, "description must have more or equal then 5 characters"],
+        maxlength: [
+          300,
+          "description must have less or equal then 300 characters",
+        ],
       },
-      sp: {
-        desc: {
-          type: String,
-          required: false,
-          default: null,
-          minlength: [
-            10,
-            "description must have more or equal then 10 characters",
-          ],
-          maxlength: [
-            200,
-            "description must have less or equal then 200 characters",
-          ],
-        },
+      es: {
+        type: String,
+        required: false,
+        default: null,
+        minlength: [5, "description must have more or equal then 5 characters"],
+        maxlength: [
+          300,
+          "description must have less or equal then 300 characters",
+        ],
       },
     },
     DLCs: {
@@ -247,8 +222,8 @@ const gameSchema = new mongoose.Schema(
 );
 
 gameSchema.pre("save", function (next) {
-  this.info.photo = `${this.info.name.split(" ").join("-")}.jpg`;
-  this.admin.slug = `${this.info.name.split(" ").join("-")}`;
+  this.cover = `${this.keywords[0].split(" ").join("-")}.jpg`;
+  this.slug = `${this.keywords[0].split(" ").join("-")}`;
   next();
 });
 
