@@ -3,6 +3,7 @@ const validator = require("validator");
 const bcrypt = require("bcryptjs");
 const crypto = require("crypto");
 const avatars = require("./../utils/avatars");
+const Game = require("./gameModel");
 
 const userSchema = new mongoose.Schema(
   {
@@ -62,6 +63,9 @@ const userSchema = new mongoose.Schema(
       type: String,
       default: "",
       maxlength: [200, "bio must be below 200 words"],
+    },
+    wishlist: {
+      type: [mongoose.Schema.Types.ObjectId],
     },
     googleId: String,
     provider: String,
@@ -136,16 +140,20 @@ userSchema.methods.CreatePasswordResetToken = async function () {
   return resetToken;
 };
 
-/* userSchema.virtual("reviews", {
-  ref: "Review",
+/* userSchema.virtual("wishlist", {
+  ref: Game,
   foreignField: "user",
   localField: "_id",
 }); */
 
-userSchema.pre("save", function (next) {
-  console.log("\x1b[34m%s\x1b[0m", "User Signed In !");
+/* userSchema.pre(/^find/, function (next) {
+  this.populate({
+    path: "wishlist",
+    select: "name cover slug",
+    model: Game,
+  });
   next();
-});
+}); */
 
 const User = mongoose.model("user", userSchema);
 

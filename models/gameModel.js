@@ -51,16 +51,19 @@ const gameSchema = new mongoose.Schema(
       type: [String],
       enum: {
         values: [
-          "pc",
-          "ps1",
-          "ps2",
-          "ps3",
-          "ps4",
-          "ps5",
-          "xbox 1",
-          "xbox 360",
+          "PC",
+          "PS1",
+          "PS2",
+          "PS3",
+          "PS4",
+          "PS5",
+          "XBOX 1",
+          "XBOX 360",
+          "XBOX SS",
+          "XBOX SX",
           "mobile",
           "switch",
+          "wii",
         ],
         message: "all platforms must be real platforms",
       },
@@ -99,8 +102,8 @@ const gameSchema = new mongoose.Schema(
         default: null,
         minlength: [5, "description must have more or equal then 5 characters"],
         maxlength: [
-          300,
-          "description must have less or equal then 300 characters",
+          500,
+          "description must have less or equal then 500 characters",
         ],
       },
       ar: {
@@ -109,8 +112,8 @@ const gameSchema = new mongoose.Schema(
         default: null,
         minlength: [5, "description must have more or equal then 5 characters"],
         maxlength: [
-          300,
-          "description must have less or equal then 300 characters",
+          500,
+          "description must have less or equal then 500 characters",
         ],
       },
       de: {
@@ -119,8 +122,8 @@ const gameSchema = new mongoose.Schema(
         default: null,
         minlength: [5, "description must have more or equal then 5 characters"],
         maxlength: [
-          300,
-          "description must have less or equal then 300 characters",
+          500,
+          "description must have less or equal then 500 characters",
         ],
       },
       fr: {
@@ -129,8 +132,8 @@ const gameSchema = new mongoose.Schema(
         default: null,
         minlength: [5, "description must have more or equal then 5 characters"],
         maxlength: [
-          300,
-          "description must have less or equal then 300 characters",
+          500,
+          "description must have less or equal then 500 characters",
         ],
       },
       es: {
@@ -139,8 +142,8 @@ const gameSchema = new mongoose.Schema(
         default: null,
         minlength: [5, "description must have more or equal then 5 characters"],
         maxlength: [
-          300,
-          "description must have less or equal then 300 characters",
+          500,
+          "description must have less or equal then 500 characters",
         ],
       },
     },

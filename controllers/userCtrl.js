@@ -3,6 +3,7 @@ const User = require("./../models/userModel");
 const catchAsync = require("./../utils/catchAsync");
 const factory = require("./handlerFactory");
 const APIFeatures = require("./../utils/apifeatures");
+const Game = require("./../models/gameModel");
 
 const filterObj = (obj, ...allowedFields) => {
   const newObj = {};
@@ -61,9 +62,13 @@ exports.deleteMe = catchAsync(async (req, res, next) => {
 //
 
 exports.getUserByName = catchAsync(async (req, res, next) => {
-  let user = await User.findOne({ username: { $eq: req.params.name } }).select(
-    "username bio avatar tags socials"
-  );
+  let user = await User.findOne({ username: { $eq: req.params.name } })
+    .select("username bio avatar tags socials wishlist")
+    .populate({
+      path: "wishlist",
+      select: "name cover slug",
+      model: Game,
+    });
   if (!user) {
     return next(new AppError(`No user found with this Username`, 404));
   }
@@ -96,10 +101,47 @@ exports.getNormalUsers = catchAsync(async (req, res, next) => {
 
 exports.getUsers = factory.getAll(User);
 
-exports.getUser = factory.getOne(User, {}, "_id username socials tags avatar");
+exports.getUser = factory.getOne(
+  User,
+  {},
+  "_id username socials tags avatar bio wishlist"
+);
 
 exports.addUser = factory.createOne(User);
 
 exports.updateUser = factory.updateOne(User);
 
 exports.deleteUser = factory.deleteOne(User);
+
+//
+
+exports.wishlist = catchAsync(async (req, res, next) => {
+  const { gameId } = req.params;
+  let wishlist = await User.findById(req.user.id)
+    .select("wishlist")
+    .then((res) => res.wishlist);
+
+  let newList = [];
+  if (wishlist.includes(gameId)) {
+    let index = wishlist.indexOf(gameId);
+    wishlist.splice(index, 1);
+    newList = [...wishlist];
+  } else {
+    newList = [...wishlist, gameId];
+  }
+
+  const updatedUser = await User.findByIdAndUpdate(
+    req.user.id,
+    { wishlist: newList },
+    {
+      new: true,
+      runValidators: true,
+    }
+  );
+  res.status(200).json({
+    status: "success",
+    data: {
+      user: updatedUser,
+    },
+  });
+});

@@ -1,6 +1,7 @@
 const allGenres = [
   "action",
-  "fps",
+  "FPS",
+  "shooter",
   "open world",
   "battle royal",
   "stealth",
@@ -17,11 +18,22 @@ const allGenres = [
   "strategy",
   "sports",
   "racing",
-  "casual",
   "fighting",
   "cards",
   "hack & slash",
   "family-friendly",
+  "sandbox",
+  "metroidvania",
+  "rogue-like",
+  "souls-like",
+  "party",
+  "retro",
+  "comedy",
+  "co-op",
+  "pixel-art",
+  "historical",
+  "tycoon",
+  "turn-based",
 ];
 
 module.exports = allGenres;

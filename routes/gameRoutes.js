@@ -1,5 +1,6 @@
 const express = require("express");
 const ctrl = require("../controllers/gameCtrl");
+const userCtrl = require("../controllers/userCtrl");
 const auth = require("./../controllers/authCtrl");
 const reviewRouter = require("./../routes/reviewRoutes");
 
@@ -9,6 +10,8 @@ router.route(`/game-of-the-day`).get(ctrl.getGameOfTheDay);
 router.route(`/games-count`).get(ctrl.countGames);
 
 router.use(`/:gameId/reviews`, reviewRouter);
+
+router.patch(`/:gameId/wishlist`, auth.protect, userCtrl.wishlist);
 
 router.route(`/`).get(ctrl.getGames).post(
   auth.protect,

@@ -1,6 +1,6 @@
 const mongoose = require("mongoose");
-const User = require("./../models/userModel");
-const Game = require("./../models/gameModel");
+const User = require("./userModel");
+const Game = require("./gameModel");
 
 const reviewSchema = new mongoose.Schema(
   {
