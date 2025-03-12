@@ -20,7 +20,6 @@ if (space === "local") {
     process.env.DATABASE_PASSWORD
   );
 }
-console.log(DB);
 mongoose
   .connect(DB, {})
   .then(() =>
