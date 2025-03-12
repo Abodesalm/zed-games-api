@@ -10,16 +10,17 @@ process.on("uncaughtException", (err) => {
 });
 
 let DB;
+let space = "host";
 
-if (process.env.SPACE === "local") {
+if (space === "local") {
   DB = process.env.LOCAL_DATABASE;
-} else {
+} else if (space === "host") {
   DB = process.env.DATABASE.replace(
     "<PASSWORD>",
     process.env.DATABASE_PASSWORD
   );
 }
-
+console.log(DB);
 mongoose
   .connect(DB, {})
   .then(() =>
