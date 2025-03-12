@@ -94,6 +94,7 @@ const gameSchema = new mongoose.Schema(
     rank: {
       type: String,
       enum: { values: ["normal", "silver", "golden", "old"] },
+      default: "normal",
     },
     descriptions: {
       en: {
@@ -215,8 +216,8 @@ const gameSchema = new mongoose.Schema(
       type: Date,
       default: Date.now,
     },
-    slug: String,
     updated_at: Date,
+    slug: String,
   },
   {
     toJSON: { virtuals: true },
@@ -227,6 +228,11 @@ const gameSchema = new mongoose.Schema(
 gameSchema.pre("save", function (next) {
   this.cover = `${this.keywords[0].split(" ").join("-")}.jpg`;
   this.slug = `${this.keywords[0].split(" ").join("-")}`;
+  next();
+});
+
+gameSchema.pre("updateOne", function (next) {
+  this.updated_at = Date.now;
   next();
 });
 

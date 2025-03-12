@@ -44,6 +44,7 @@ const reviewSchema = new mongoose.Schema(
         min: [0, "total rate must be above 0"],
       },
     },
+
     texts: {
       story: String,
       beauty: String,
@@ -55,6 +56,7 @@ const reviewSchema = new mongoose.Schema(
       type: Date,
       default: Date.now,
     },
+    updated_at: Date,
   },
   {
     toJSON: { virtuals: true },
@@ -72,6 +74,11 @@ reviewSchema.pre(/^find/, function (next) {
     select: "username avatar",
     model: User,
   });
+  next();
+});
+
+reviewSchema.pre("updateOne", function (next) {
+  this.updated_at = Date.now;
   next();
 });
 

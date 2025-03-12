@@ -8,6 +8,7 @@ const router = express.Router();
 
 router.route(`/game-of-the-day`).get(ctrl.getGameOfTheDay);
 router.route(`/games-count`).get(ctrl.countGames);
+router.route(`/random-golden`).get(ctrl.randomGolden);
 
 router.use(`/:gameId/reviews`, reviewRouter);
 

@@ -99,22 +99,6 @@ exports.getNormalUsers = catchAsync(async (req, res, next) => {
   });
 });
 
-exports.getUsers = factory.getAll(User);
-
-exports.getUser = factory.getOne(
-  User,
-  {},
-  "_id username socials tags avatar bio wishlist"
-);
-
-exports.addUser = factory.createOne(User);
-
-exports.updateUser = factory.updateOne(User);
-
-exports.deleteUser = factory.deleteOne(User);
-
-//
-
 exports.wishlist = catchAsync(async (req, res, next) => {
   const { gameId } = req.params;
   let wishlist = await User.findById(req.user.id)
@@ -145,3 +129,20 @@ exports.wishlist = catchAsync(async (req, res, next) => {
     },
   });
 });
+
+//
+//
+
+exports.getUsers = factory.getAll(User);
+
+exports.getUser = factory.getOne(
+  User,
+  {},
+  "_id username socials tags avatar bio wishlist"
+);
+
+exports.addUser = factory.createOne(User);
+
+exports.updateUser = factory.updateOne(User);
+
+exports.deleteUser = factory.deleteOne(User);

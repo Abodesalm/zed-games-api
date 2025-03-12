@@ -95,3 +95,16 @@ const hashCode = (str) => {
   }
   return hash;
 };
+
+exports.randomGolden = catchAsync(async (req, res, next) => {
+  const games = await Game.aggregate([
+    { $match: { rank: "golden" } },
+    { $sample: { size: 10 } },
+  ]);
+  res.status(200).json({
+    status: "success",
+    data: {
+      data: games,
+    },
+  });
+});

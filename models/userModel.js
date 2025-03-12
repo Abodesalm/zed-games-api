@@ -83,6 +83,7 @@ const userSchema = new mongoose.Schema(
       type: Date,
       default: Date.now,
     },
+    updated_at: Date,
   },
   {
     toJSON: { virtuals: true },
@@ -139,6 +140,11 @@ userSchema.methods.CreatePasswordResetToken = async function () {
   this.passwordResetExpires = Date.now() + 10 * 60 * 1000;
   return resetToken;
 };
+
+userSchema.pre("updateOne", function (next) {
+  this.updated_at = Date.now;
+  next();
+});
 
 /* userSchema.virtual("wishlist", {
   ref: Game,

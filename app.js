@@ -15,6 +15,7 @@ const gameRouter = require("./routes/gameRoutes");
 //const authRouter = require("./routes/authRoutes");
 const userRouter = require("./routes/userRoutes");
 const reviewRouter = require("./routes/reviewRoutes");
+const reportRouter = require("./routes/reportRoutes");
 
 // 1) GLOBAL MIDDLEWARE
 
@@ -61,6 +62,7 @@ app.use(`/api/games`, gameRouter);
 //app.use(`/api/auth`, authRouter);
 app.use(`/api/users`, userRouter);
 app.use(`/api/reviews`, reviewRouter);
+app.use(`/api/news`, reportRouter);
 
 app.all("*", (req, res, next) => {
   next(new AppError(`Can't find ${req.originalUrl} on this server`, 404));
