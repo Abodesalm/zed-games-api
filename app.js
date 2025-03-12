@@ -29,12 +29,12 @@ app.use(helmet());
 /* if (process.env.NODE_ENV === "dev")  */ app.use(morgan("dev"));
 
 // limit requests from same IP
-const limiter = rateLimit({
+/* const limiter = rateLimit({
   max: 1000,
   windowMs: 60 * 60 * 1000,
   message: "too many requests from this IP, please try again in an hour!",
 });
-app.use("/api", limiter);
+app.use("/api", limiter); */
 
 // Data sanitization against NoSQL query injection
 app.use(mongoSanitize());
